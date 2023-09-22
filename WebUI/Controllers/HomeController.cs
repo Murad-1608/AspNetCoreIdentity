@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using WebUI.Extensions;
 using WebUI.Models;
 using WebUI.ViewModels;
 
@@ -10,11 +11,14 @@ namespace WebUI.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
         public HomeController(ILogger<HomeController> logger,
-                              UserManager<AppUser> userManager)
+                              UserManager<AppUser> userManager,
+                              SignInManager<AppUser> signInManager)
         {
             _logger = logger;
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public IActionResult Index()
@@ -57,10 +61,47 @@ namespace WebUI.Controllers
                 return RedirectToAction(nameof(HomeController.SignUp));
             }
 
-            foreach (var item in identityResult.Errors)
+            ModelState.AddModelErrorList(identityResult.Errors.Select(x => x.Description).ToList());
+
+            return View();
+        }
+
+
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SignIn(SignInViewModel model, string? returnUrl = null)
+        {
+            returnUrl = returnUrl ?? Url.Action("index", "home");
+
+            var hasUser = await userManager.FindByEmailAsync(model.Email);
+
+            if (hasUser == null)
             {
-                ModelState.AddModelError("", item.Description);
+                ModelState.AddModelError(string.Empty, "Email və ya parol yanlışdır");
+                return View();
             }
+
+
+            var signInResult = await signInManager.PasswordSignInAsync(hasUser, model.Password, model.RememberMe, true);
+
+            if (signInResult.Succeeded)
+            {
+                return Redirect(returnUrl);
+            }
+
+            if (signInResult.IsLockedOut)
+            {
+                ModelState.AddModelErrorList(new List<string>() { "3 dəqiqə müddətində giriş edə bilmərsiniz" });
+                return View();
+            }
+
+            ModelState.AddModelErrorList(new List<string>() { "Email və ya parol yanlışdır" });
+
             return View();
         }
 

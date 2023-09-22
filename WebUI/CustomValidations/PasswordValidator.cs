@@ -11,17 +11,17 @@ namespace WebUI.CustomValidations
 
             if (password.ToLower().Contains(user.UserName.ToLower()))
             {
-                errors.Add(new() { Code = "PasswordNoContainUserName", Description = "Parolda istifadəçi adınız olmamalıdır" });
+                errors.Add(new() { Code = "PasswordContainUserName", Description = "Parolda istifadəçi adınız olmamalıdır" });
             }
 
             if (password.ToLower().StartsWith("123"))
             {
-                errors.Add(new() { Code = "PasswordNoContain123", Description = "Parol 123 ilə başlaya bilməz" });
+                errors.Add(new() { Code = "PasswordContain123", Description = "Parol 123 ilə başlaya bilməz" });
             }
 
-            if (!errors.Any())
+            if (errors.Any())
             {
-                return Task.FromResult(IdentityResult.Failed());
+                return Task.FromResult(IdentityResult.Failed(errors.ToArray()));
             }
             return Task.FromResult(IdentityResult.Success);
         }

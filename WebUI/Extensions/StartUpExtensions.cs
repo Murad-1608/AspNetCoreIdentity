@@ -1,4 +1,5 @@
 ﻿using WebUI.CustomValidations;
+using WebUI.Localizations;
 using WebUI.Models;
 
 namespace WebUI.Extensions
@@ -9,7 +10,7 @@ namespace WebUI.Extensions
         {
             services.AddIdentity<AppUser, AppRole>(options =>
             {
-                options.User.RequireUniqueEmail = true;
+                options.User.RequireUniqueEmail = false;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnoprstuvwxyz1234567890_";
 
                 options.Password.RequiredLength = 6;
@@ -18,8 +19,13 @@ namespace WebUI.Extensions
                 options.Password.RequireUppercase = false;
                 options.Password.RequireDigit = false;
 
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(4);
+                options.Lockout.MaxFailedAccessAttempts = 3;
 
-            }).AddPasswordValidator<PasswordValidator>()
+
+            }).AddErrorDescriber<LocalizationIdentityErrorDescriber>()
+              .AddUserValidator<UserValidator>()
+              .AddPasswordValidator<PasswordValidator>()
               .AddEntityFrameworkStores<AppDbContext>();
         }
     }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WebUI.Extensions;
 using WebUI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddIdentityWithExt();
+
+builder.Services.ConfigureApplicationCookie(opt =>
+{
+    opt.LoginPath = new PathString("/home/signin");
+
+    CookieBuilder cookieBuilder = new();
+    cookieBuilder.Name = "IdentityCookie";
+    opt.Cookie = cookieBuilder;
+    opt.ExpireTimeSpan = TimeSpan.FromDays(60);
+
+    // Istifadeci 60 gun boyunca sayta girdikde her defe cookie'nin muddetini 60 gun uzadir
+    opt.SlidingExpiration = true;
+
+});
 
 var app = builder.Build();
 
