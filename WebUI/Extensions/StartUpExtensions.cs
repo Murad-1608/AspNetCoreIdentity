@@ -1,4 +1,5 @@
-﻿using WebUI.Models;
+﻿using WebUI.CustomValidations;
+using WebUI.Models;
 
 namespace WebUI.Extensions
 {
@@ -18,7 +19,8 @@ namespace WebUI.Extensions
                 options.Password.RequireDigit = false;
 
 
-            }).AddEntityFrameworkStores<AppDbContext>();
+            }).AddPasswordValidator<PasswordValidator>()
+              .AddEntityFrameworkStores<AppDbContext>();
         }
     }
 }
