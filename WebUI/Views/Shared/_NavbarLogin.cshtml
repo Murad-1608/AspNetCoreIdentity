@@ -1,0 +1,18 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <ul class="navbar-nav me-0">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @User.Identity.Name
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" asp-route-returnurl="/home/index" asp-controller="member" asp-action="logout">Çıxış</a></li>
+            </ul>
+        </li>
+    </ul>
+}
+else
+{
+    <a class="btn btn-outline-success mx-1" asp-controller="home" asp-action="signup">Qeydiyyat</a>
+    <a class="btn btn-outline-success" asp-controller="home" asp-action="signin">Giriş</a>
+}

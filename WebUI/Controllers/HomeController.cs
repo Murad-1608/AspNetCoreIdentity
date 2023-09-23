@@ -72,7 +72,6 @@ namespace WebUI.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<IActionResult> SignIn(SignInViewModel model, string? returnUrl = null)
         {
@@ -103,6 +102,32 @@ namespace WebUI.Controllers
             ModelState.AddModelErrorList(new List<string>() { "Email və ya parol yanlışdır" });
 
             return View();
+        }
+
+
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword(ForgetViewModel request)
+        {
+
+            var hasUser = await userManager.FindByEmailAsync(request.Email);
+
+            if (hasUser == null)
+            {
+                ModelState.AddModelError(string.Empty, "Bu email-lə sahib istifadəçi tapılmadı");
+                return View();
+            }
+            string passwordResetToken = await userManager.GeneratePasswordResetTokenAsync(hasUser);
+
+            var passwordResetLink = Url.Action("resetpassword", "home", new { userId = hasUser.Id, Token = passwordResetToken });
+
+            TempData["SuccessedMessage"] = "Parol yeniləmə linki email hesabınıza göndərilmişdir.";
+
+            return RedirectToAction("forgetpassword");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

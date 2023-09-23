@@ -1,4 +1,5 @@
-﻿using WebUI.CustomValidations;
+﻿using Microsoft.AspNetCore.Identity;
+using WebUI.CustomValidations;
 using WebUI.Localizations;
 using WebUI.Models;
 
@@ -8,6 +9,14 @@ namespace WebUI.Extensions
     {
         public static void AddIdentityWithExt(this IServiceCollection services)
         {
+
+            //Foget password
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+            {
+                opt.TokenLifespan = TimeSpan.FromHours(2);
+            });
+
+
             services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.User.RequireUniqueEmail = false;
@@ -26,6 +35,7 @@ namespace WebUI.Extensions
             }).AddErrorDescriber<LocalizationIdentityErrorDescriber>()
               .AddUserValidator<UserValidator>()
               .AddPasswordValidator<PasswordValidator>()
+              .AddDefaultTokenProviders()
               .AddEntityFrameworkStores<AppDbContext>();
         }
     }
