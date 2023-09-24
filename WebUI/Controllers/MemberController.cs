@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.FileProviders;
 using WebUI.Extensions;
 using WebUI.Models;
 using WebUI.ViewModels;
@@ -13,11 +14,14 @@ namespace WebUI.Controllers
     {
         private readonly SignInManager<AppUser> signInManager;
         private readonly UserManager<AppUser> userManager;
+        private readonly IFileProvider fileProvider;
         public MemberController(SignInManager<AppUser> signInManager,
-                                UserManager<AppUser> userManager)
+                                UserManager<AppUser> userManager,
+                                IFileProvider fileProvider)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.fileProvider = fileProvider;
         }
 
         public async Task<IActionResult> Index()
@@ -33,10 +37,7 @@ namespace WebUI.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> PasswordChange()
-        {
-            return View();
-        }
+
 
         public async Task<IActionResult> UserEdit()
         {
@@ -54,6 +55,61 @@ namespace WebUI.Controllers
                 Gender = currentUser.Gender
             };
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserEdit(UserEditViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var currentUser = await userManager.FindByNameAsync(User.Identity.Name);
+
+            currentUser.UserName = request.UserName;
+            currentUser.Email = request.Email;
+            currentUser.PhoneNumber = request.Phone;
+            currentUser.BirthDate = request.BirthDate;
+            currentUser.Gender = request.Gender;
+            currentUser.City = request.City;
+
+
+            if (request.Picture != null && request.Picture.Length > 0)
+            {
+                var wwwrootFolder = fileProvider.GetDirectoryContents("wwwroot");
+
+                var randomFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension((request.Picture.FileName))}";
+
+                var newPicturePath = Path.Combine(wwwrootFolder.First(x => x.Name == "userpictures").PhysicalPath, randomFileName);
+
+                using var stream = new FileStream(newPicturePath, FileMode.Create);
+
+                await request.Picture.CopyToAsync(stream);
+
+                currentUser.Picture = randomFileName;
+            }
+
+            var updateToUserResult = await userManager.UpdateAsync(currentUser);
+
+            if (!updateToUserResult.Succeeded)
+            {
+                ModelState.AddModelErrorList(updateToUserResult.Errors);
+                return View();
+            }
+
+            await userManager.UpdateSecurityStampAsync(currentUser);
+            await signInManager.SignOutAsync();
+            await signInManager.SignInAsync(currentUser, true);
+
+            TempData["SuccessedMessage"] = "Məlumatlar uğurla yeniləndi";
+
+            return RedirectToAction("useredit", request);
+        }
+
+        public async Task<IActionResult> PasswordChange()
+        {
+            return View();
         }
 
         [HttpPost]
