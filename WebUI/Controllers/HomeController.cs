@@ -75,7 +75,12 @@ namespace WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn(SignInViewModel model, string? returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Action("index", "home");
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            returnUrl = returnUrl ?? Url.Action("index", "member");
 
             var hasUser = await userManager.FindByEmailAsync(model.Email);
 

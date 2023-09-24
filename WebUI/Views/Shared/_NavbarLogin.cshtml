@@ -6,6 +6,8 @@
                 @User.Identity.Name
             </a>
             <ul class="dropdown-menu">
+                <li><a class="dropdown-item"  asp-controller="member" asp-action="index">Profil</a></li>
+                <li><a class="dropdown-item"  asp-controller="member" asp-action="passwordchange">Parolu dəyişdir</a></li>
                 <li><a class="dropdown-item" asp-route-returnurl="/home/index" asp-controller="member" asp-action="logout">Çıxış</a></li>
             </ul>
         </li>
