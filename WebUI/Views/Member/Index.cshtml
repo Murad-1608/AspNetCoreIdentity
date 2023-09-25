@@ -4,7 +4,18 @@
 }
 @model UserViewModel
 
-
+<div class="row">
+    <div class="col-md4 offset-md-3">
+        @if (string.IsNullOrEmpty(Model.PictureUrl))
+        {
+            <img class="rounded" src="~/userpictures/default_user_picture.jpg" />
+        }
+        else
+        {
+            <img class="rounded" src="~/userpictures/@(Model.PictureUrl)" />
+        }
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-6 offset-md-3">
