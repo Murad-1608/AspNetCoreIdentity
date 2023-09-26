@@ -12,11 +12,12 @@ namespace WebUI.TagHelpers
 
             if (string.IsNullOrEmpty(PictureUrl))
             {
-                output.Attributes.SetAttribute("src", "~/userpictures/default_user_picture.jpg");
+                output.Attributes.SetAttribute("src", "/userpictures/default_user_picture.jpg");
+                
             }
             else
             {
-                output.Attributes.SetAttribute("src", $"~/userpictures/{PictureUrl}");
+                output.Attributes.SetAttribute("src", $"/userpictures/{PictureUrl}");
             }
         }
     }
