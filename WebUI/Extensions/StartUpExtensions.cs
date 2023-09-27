@@ -16,7 +16,6 @@ namespace WebUI.Extensions
                 opt.TokenLifespan = TimeSpan.FromHours(2);
             });
 
-
             services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.User.RequireUniqueEmail = false;
