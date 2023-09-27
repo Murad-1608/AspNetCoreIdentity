@@ -31,11 +31,14 @@ namespace WebUI.Extensions
                 options.Lockout.MaxFailedAccessAttempts = 3;
 
 
-            }).AddErrorDescriber<LocalizationIdentityErrorDescriber>()
+            }).AddRoleManager<RoleManager<AppRole>>()
+              .AddErrorDescriber<LocalizationIdentityErrorDescriber>()
               .AddUserValidator<UserValidator>()
               .AddPasswordValidator<PasswordValidator>()
               .AddDefaultTokenProviders()
               .AddEntityFrameworkStores<AppDbContext>();
+
+
         }
     }
 }
