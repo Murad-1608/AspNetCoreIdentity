@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using WebUI.Areas.Admin.Models;
+using WebUI.Extensions;
 using WebUI.Models;
 
 namespace WebUI.Areas.Admin.Controllers
@@ -22,9 +24,16 @@ namespace WebUI.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult RoleCreate()
+        public async Task<IActionResult> RoleCreate(RoleCreateViewModel request)
         {
-            return View();
+            var result = await roleManager.CreateAsync(new AppRole { Name = request.Name });
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelErrorList(result.Errors);
+                return View();
+            }
+            return RedirectToAction("index");
         }
     }
 }
