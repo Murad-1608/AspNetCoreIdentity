@@ -31,7 +31,7 @@ namespace WebUI.Extensions
                 options.Lockout.MaxFailedAccessAttempts = 3;
 
 
-            }).AddRoleManager<RoleManager<AppRole>>()
+            })
               .AddErrorDescriber<LocalizationIdentityErrorDescriber>()
               .AddUserValidator<UserValidator>()
               .AddPasswordValidator<PasswordValidator>()

@@ -8,9 +8,9 @@ namespace WebUI.Areas.Admin.Controllers
     public class RolesController : Controller
     {
         private readonly UserManager<AppUser> userManager;
-        private readonly RoleManager<AppUser> roleManager;
+        private readonly RoleManager<AppRole> roleManager;
 
-        public RolesController(RoleManager<AppUser> roleManager,
+        public RolesController(RoleManager<AppRole> roleManager,
                                UserManager<AppUser> userManager)
         {
             this.roleManager = roleManager;
@@ -18,6 +18,11 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult RoleCreate()
         {
             return View();
         }
