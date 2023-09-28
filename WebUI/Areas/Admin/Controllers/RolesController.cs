@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebUI.Areas.Admin.Models;
 using WebUI.Extensions;
 using WebUI.Models;
@@ -19,11 +20,24 @@ namespace WebUI.Areas.Admin.Controllers
             this.userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+        {
+            var roles = await roleManager.Roles.Select(x => new RoleViewModel()
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToListAsync();
+
+            return View(roles);
+        }
+
+        public IActionResult RoleCreate()
         {
             return View();
         }
 
+
+        [HttpPost]
         public async Task<IActionResult> RoleCreate(RoleCreateViewModel request)
         {
             var result = await roleManager.CreateAsync(new AppRole { Name = request.Name });
