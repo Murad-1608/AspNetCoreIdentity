@@ -17,12 +17,19 @@
 
 <div class="row">
     <div class="col-md-8 offset-md-2">
+
+        @if (TempData["SuccessedMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["SuccessedMessage"]
+            </div>
+        }
+
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Id</th>
                     <th>Rol</th>
-                    <th>Yenilə</th>
                 </tr>
             </thead>
 
@@ -33,6 +40,7 @@
                         <td>@item.Id</td>
                         <td>@item.Name</td>
                         <td><a asp-route-id="@item.Id" asp-controller="roles" asp-action="roleupdate" class="btn btn-success">Yenilə</a></td>
+                        <td><a asp-route-id="@item.Id" asp-controller="roles" asp-action="roledelete" class="btn btn-danger">Sil</a></td>
                     </tr>
                 }
             </tbody>

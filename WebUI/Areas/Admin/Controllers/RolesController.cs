@@ -47,12 +47,20 @@ namespace WebUI.Areas.Admin.Controllers
                 ModelState.AddModelErrorList(result.Errors);
                 return View();
             }
+            TempData["SuccessedMessage"] = "Rol əlavə olundu";
+
             return RedirectToAction("index");
         }
 
         public async Task<IActionResult> RoleUpdate(string id)
         {
             var role = await roleManager.FindByIdAsync(id);
+
+            if (role == null)
+            {
+                throw new Exception("Yenilənəcək rol tapılmadı");
+            }
+
 
             RoleUpdateViewModel viewModel = new()
             {
@@ -66,7 +74,12 @@ namespace WebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> RoleUpdate(RoleUpdateViewModel request)
         {
-            var result = await roleManager.UpdateAsync(new AppRole() { Name = request.Name, Id = request.Id });
+            var role = await roleManager.FindByIdAsync(request.Id);
+
+            role.Name = request.Name;
+
+            var result = await roleManager.UpdateAsync(role);
+
             if (!ModelState.IsValid)
             {
                 return View();
@@ -77,8 +90,28 @@ namespace WebUI.Areas.Admin.Controllers
                 ModelState.AddModelErrorList(result.Errors);
                 return View();
             }
+            TempData["SuccessedMessage"] = "Rol yeniləndi";
             return RedirectToAction("index");
 
+        }
+
+        public async Task<IActionResult> RoleDelete(string id)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+
+            if (role == null)
+            {
+                throw new Exception("Silinəcək rol tapılmadı");
+            }
+
+            var result = await roleManager.DeleteAsync(role);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.Select(x => x.Description).First());
+            }
+            TempData["SuccessedMessage"] = "Rol silindi";
+            return RedirectToAction("index");
         }
     }
 }

@@ -31,8 +31,7 @@ namespace WebUI.Extensions
                 options.Lockout.MaxFailedAccessAttempts = 3;
 
 
-            })
-              .AddErrorDescriber<LocalizationIdentityErrorDescriber>()
+            }).AddErrorDescriber<LocalizationIdentityErrorDescriber>()
               .AddUserValidator<UserValidator>()
               .AddPasswordValidator<PasswordValidator>()
               .AddDefaultTokenProviders()
