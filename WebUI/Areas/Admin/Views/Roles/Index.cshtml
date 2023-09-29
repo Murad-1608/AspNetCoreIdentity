@@ -22,6 +22,7 @@
                 <tr>
                     <th>Id</th>
                     <th>Rol</th>
+                    <th>Yenilə</th>
                 </tr>
             </thead>
 
@@ -31,6 +32,7 @@
                     <tr>
                         <td>@item.Id</td>
                         <td>@item.Name</td>
+                        <td><a asp-route-id="@item.Id" asp-controller="roles" asp-action="roleupdate" class="btn btn-success">Yenilə</a></td>
                     </tr>
                 }
             </tbody>

@@ -49,5 +49,36 @@ namespace WebUI.Areas.Admin.Controllers
             }
             return RedirectToAction("index");
         }
+
+        public async Task<IActionResult> RoleUpdate(string id)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+
+            RoleUpdateViewModel viewModel = new()
+            {
+                Id = role.Id,
+                Name = role.Name
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RoleUpdate(RoleUpdateViewModel request)
+        {
+            var result = await roleManager.UpdateAsync(new AppRole() { Name = request.Name, Id = request.Id });
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelErrorList(result.Errors);
+                return View();
+            }
+            return RedirectToAction("index");
+
+        }
     }
 }
