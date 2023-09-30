@@ -91,6 +91,7 @@ namespace WebUI.Areas.Admin.Controllers
                 return View();
             }
             TempData["SuccessedMessage"] = "Rol yeniləndi";
+
             return RedirectToAction("index");
 
         }
@@ -112,6 +113,32 @@ namespace WebUI.Areas.Admin.Controllers
             }
             TempData["SuccessedMessage"] = "Rol silindi";
             return RedirectToAction("index");
+        }
+
+
+        public async Task<IActionResult> AssignRoleToUser(string id)
+        {
+            var currentUser = await userManager.FindByIdAsync(id);
+            var roles = await roleManager.Roles.ToListAsync();
+            var assignRoleToUsers = new List<AssignRoleToUserViewModel>();
+            var userRoles = await userManager.GetRolesAsync(currentUser);
+
+
+            foreach (var item in roles)
+            {
+                var assignRoleToUser = new AssignRoleToUserViewModel();
+
+                assignRoleToUser.Id = item.Id;
+                assignRoleToUser.Name = item.Name;
+
+                if (userRoles.Contains(item.Name))
+                {
+                    assignRoleToUser.Exits = true;
+                }
+
+                assignRoleToUsers.Add(assignRoleToUser);
+            }
+            return View(assignRoleToUsers);
         }
     }
 }
