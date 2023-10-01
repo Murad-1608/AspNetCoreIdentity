@@ -133,12 +133,18 @@ namespace WebUI.Areas.Admin.Controllers
 
                 if (userRoles.Contains(item.Name))
                 {
-                    assignRoleToUser.Exits = true;
+                    assignRoleToUser.Exist = true;
                 }
 
                 assignRoleToUsers.Add(assignRoleToUser);
             }
             return View(assignRoleToUsers);
+        }
+
+        [HttpPost]
+        public IActionResult AssignRoleToUser(List<AssignRoleToUserViewModel> requestList)
+        {
+            return View();
         }
     }
 }
