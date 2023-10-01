@@ -118,6 +118,7 @@ namespace WebUI.Areas.Admin.Controllers
 
         public async Task<IActionResult> AssignRoleToUser(string id)
         {
+            ViewBag.userId = id;
             var currentUser = await userManager.FindByIdAsync(id);
             var roles = await roleManager.Roles.ToListAsync();
             var assignRoleToUsers = new List<AssignRoleToUserViewModel>();
@@ -142,9 +143,22 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult AssignRoleToUser(List<AssignRoleToUserViewModel> requestList)
+        public async Task<IActionResult> AssignRoleToUser(string userId, List<AssignRoleToUserViewModel> requestList)
         {
-            return View();
+            var user = await userManager.FindByIdAsync(userId);
+
+            foreach (var item in requestList)
+            {
+                if (item.Exist)
+                {
+                    await userManager.AddToRoleAsync(user, item.Name);
+                }
+                else
+                {
+                    await userManager.RemoveFromRoleAsync(user, item.Name);
+                }
+            }
+            return RedirectToAction("userlist","home");
         }
     }
 }
