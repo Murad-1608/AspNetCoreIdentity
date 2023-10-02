@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebUI.Areas.Admin.Models;
@@ -31,12 +32,13 @@ namespace WebUI.Areas.Admin.Controllers
             return View(roles);
         }
 
+        [Authorize(Roles ="admin,role-action")]
         public IActionResult RoleCreate()
         {
             return View();
         }
 
-
+        [Authorize(Roles ="admin,role-action")]
         [HttpPost]
         public async Task<IActionResult> RoleCreate(RoleCreateViewModel request)
         {
@@ -51,6 +53,7 @@ namespace WebUI.Areas.Admin.Controllers
 
             return RedirectToAction("index");
         }
+        [Authorize(Roles = "admin,role-action")]
 
         public async Task<IActionResult> RoleUpdate(string id)
         {
@@ -70,6 +73,7 @@ namespace WebUI.Areas.Admin.Controllers
 
             return View(viewModel);
         }
+        [Authorize(Roles = "admin,role-action")]
 
         [HttpPost]
         public async Task<IActionResult> RoleUpdate(RoleUpdateViewModel request)
@@ -95,6 +99,7 @@ namespace WebUI.Areas.Admin.Controllers
             return RedirectToAction("index");
 
         }
+        [Authorize(Roles = "admin,role-action")]
 
         public async Task<IActionResult> RoleDelete(string id)
         {

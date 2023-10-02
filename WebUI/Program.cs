@@ -24,7 +24,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
 {
     opt.LoginPath = new PathString("/home/signin");
     opt.LogoutPath = new PathString("/member/logout");
-
+    opt.AccessDeniedPath = new PathString("/member/accessdenied");
     CookieBuilder cookieBuilder = new();
     cookieBuilder.Name = "IdentityCookie";
     opt.Cookie = cookieBuilder;

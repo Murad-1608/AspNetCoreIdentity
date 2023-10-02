@@ -151,5 +151,11 @@ namespace WebUI.Controllers
         {
             await signInManager.SignOutAsync();
         }
+
+        public IActionResult AccessDenied(string ReturnUrl)
+        {
+            
+            return View();
+        }
     }
 }
